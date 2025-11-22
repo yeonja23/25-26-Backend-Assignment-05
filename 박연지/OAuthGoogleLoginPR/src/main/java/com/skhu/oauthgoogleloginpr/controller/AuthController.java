@@ -1,5 +1,6 @@
 package com.skhu.oauthgoogleloginpr.controller;
 
+import com.skhu.oauthgoogleloginpr.dto.user.AccessTokenDto;
 import com.skhu.oauthgoogleloginpr.dto.user.LoginRequestDto;
 import com.skhu.oauthgoogleloginpr.dto.user.RefreshTokenDto;
 import com.skhu.oauthgoogleloginpr.dto.user.SignupRequestDto;
@@ -9,7 +10,10 @@ import com.skhu.oauthgoogleloginpr.service.AuthService;
 import com.skhu.oauthgoogleloginpr.service.TokenService;
 import com.skhu.oauthgoogleloginpr.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -30,12 +34,29 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<TokenDto> login(@RequestBody LoginRequestDto requestDto) {
-        return ResponseEntity.ok(authService.login(requestDto));
+    public ResponseEntity<AccessTokenDto> login(@RequestBody LoginRequestDto requestDto) {
+        TokenDto tokens = authService.login(requestDto);
+
+        // 리프레시 토큰을 쿠키로 내보내도록 수정
+        ResponseCookie refreshCookie = ResponseCookie.from("refresh_token", tokens.refreshToken())
+                .httpOnly(true)
+                .secure(true)
+                .path("/")
+                .sameSite("Strict")
+                .maxAge(7 * 24 * 60 * 60)
+                .build();
+
+        return ResponseEntity.ok()
+                .header(HttpHeaders.SET_COOKIE, refreshCookie.toString())
+                .body(new AccessTokenDto(tokens.accessToken()));
     }
 
     @PostMapping("/reissue")
-    public ResponseEntity<TokenDto> reissue(@RequestBody RefreshTokenDto requestDto) {
-        return ResponseEntity.ok(tokenService.reissueAccessToken(requestDto.refreshToken()));
+    public ResponseEntity<AccessTokenDto> reissue(
+            @CookieValue("refresh_token") String refreshToken
+    ) {
+        TokenDto newTokens = tokenService.reissueAccessToken(refreshToken);
+
+        return ResponseEntity.ok(new AccessTokenDto(newTokens.accessToken()));
     }
 }
