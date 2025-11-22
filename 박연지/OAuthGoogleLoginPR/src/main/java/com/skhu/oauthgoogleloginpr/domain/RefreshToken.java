@@ -16,7 +16,6 @@ import java.time.LocalDateTime;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-@Builder
 public class RefreshToken extends BaseEntity {
 
     @Id
@@ -26,6 +25,13 @@ public class RefreshToken extends BaseEntity {
     private Long userId;
     private String token;
     private LocalDateTime expiration;
+
+    @Builder
+    public RefreshToken(Long userId, String token, LocalDateTime expiration) {
+        this.userId = userId;
+        this.token = token;
+        this.expiration = expiration;
+    }
 
     public void updateToken(String newToken, LocalDateTime newExpiration) {
         this.token = newToken;
