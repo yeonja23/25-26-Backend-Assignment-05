@@ -1,20 +1,14 @@
 package com.skhu.oauthgoogleloginpr.dto.google;
 
-import com.google.gson.annotations.SerializedName;
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import lombok.Getter;
 
 @Getter
+@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class GoogleTokenResponse {
-    @SerializedName("access_token")
     private String accessToken;
-
-    @SerializedName("expires_in")
     private Long expiresIn;
-
-    @SerializedName("token_type")
     private String tokenType;
-
-    @SerializedName("refresh_token")
     private String refreshToken;
 }
-

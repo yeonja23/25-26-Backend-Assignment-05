@@ -1,6 +1,6 @@
 package com.skhu.oauthgoogleloginpr.service;
 
-import com.google.gson.Gson;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.skhu.oauthgoogleloginpr.dto.google.GoogleTokenResponse;
 import com.skhu.oauthgoogleloginpr.dto.google.GoogleUserInfo;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +17,7 @@ import java.util.Map;
 public class GoogleClient {
 
     private final RestTemplate restTemplate = new RestTemplate();
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
     @Value("${spring.oauth.google.client-id}")
     private String GOOGLE_CLIENT_ID;
@@ -27,10 +28,8 @@ public class GoogleClient {
     @Value("${spring.oauth.google.redirect-uri}")
     private String GOOGLE_REDIRECT_URI;
 
-    private final String GOOGLE_TOKEN_URL = "https://oauth2.googleapis.com/token";
-    private final String GOOGLE_USERINFO_URL = "https://www.googleapis.com/oauth2/v2/userinfo";
-
-    private final Gson gson = new Gson();
+    private static final String GOOGLE_TOKEN_URL = "https://oauth2.googleapis.com/token";
+    private static final String GOOGLE_USERINFO_URL = "https://www.googleapis.com/oauth2/v2/userinfo";
 
     public String requestAccessToken(String code) {
 
@@ -52,10 +51,14 @@ public class GoogleClient {
             throw new RuntimeException("구글 Access Token 요청 실패");
         }
 
-        GoogleTokenResponse tokenResponse =
-                gson.fromJson(response.getBody(), GoogleTokenResponse.class);
+        try {
+            GoogleTokenResponse tokenResponse =
+                    objectMapper.readValue(response.getBody(), GoogleTokenResponse.class);
 
-        return tokenResponse.getAccessToken();
+            return tokenResponse.getAccessToken();
+        } catch (Exception e) {
+            throw new RuntimeException("토큰 파싱 실패", e);
+        }
     }
 
     public GoogleUserInfo requestUserInfo(String accessToken) {
@@ -77,6 +80,10 @@ public class GoogleClient {
             throw new RuntimeException("유저 정보 요청 실패");
         }
 
-        return gson.fromJson(response.getBody(), GoogleUserInfo.class);
+        try {
+            return objectMapper.readValue(response.getBody(), GoogleUserInfo.class);
+        } catch (Exception e) {
+            throw new RuntimeException("유저 정보 파싱 실패", e);
+        }
     }
 }

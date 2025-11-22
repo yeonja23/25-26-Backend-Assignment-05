@@ -1,19 +1,15 @@
 package com.skhu.oauthgoogleloginpr.dto.google;
 
-import com.google.gson.annotations.SerializedName;
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import lombok.Getter;
 
 @Getter
+@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class GoogleUserInfo {
     private String id;
     private String email;
-
-    @SerializedName("verified_email")
     private boolean verifiedEmail;
-
     private String name;
-
-    @SerializedName("picture")
-    private String pictureUrl;
+    private String picture;
 }
-
