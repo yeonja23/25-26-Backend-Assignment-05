@@ -4,6 +4,7 @@ import com.skhu.oauthgoogleloginpr.domain.Role;
 import com.skhu.oauthgoogleloginpr.domain.User;
 import com.skhu.oauthgoogleloginpr.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -11,6 +12,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Configuration
 @RequiredArgsConstructor
+@Slf4j
 public class AdminInitializer {
 
     private final UserRepository userRepository;
@@ -27,7 +29,7 @@ public class AdminInitializer {
                     .build();
 
             userRepository.save(admin);
-            System.out.println("관리자 계정 생성됨: admin@test.com / admin1234");
+            log.info("관리자 계정 생성됨: {} / {}", "admin@test.com", "admin1234");
         };
     }
 }
