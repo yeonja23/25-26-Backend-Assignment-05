@@ -20,13 +20,13 @@ public class GoogleClient {
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     @Value("${spring.oauth.google.client-id}")
-    private String GOOGLE_CLIENT_ID;
+    private String googleClientId;
 
     @Value("${spring.oauth.google.client-secret}")
-    private String GOOGLE_CLIENT_SECRET;
+    private String googleClientSecret;
 
     @Value("${spring.oauth.google.redirect-uri}")
-    private String GOOGLE_REDIRECT_URI;
+    private String googleRedirectUri;
 
     private static final String GOOGLE_TOKEN_URL = "https://oauth2.googleapis.com/token";
     private static final String GOOGLE_USERINFO_URL = "https://www.googleapis.com/oauth2/v2/userinfo";
@@ -35,9 +35,9 @@ public class GoogleClient {
 
         Map<String, String> params = Map.of(
                 "code", code,
-                "client_id", GOOGLE_CLIENT_ID,
-                "client_secret", GOOGLE_CLIENT_SECRET,
-                "redirect_uri", GOOGLE_REDIRECT_URI,
+                "client_id", googleClientId,
+                "client_secret", googleClientSecret,
+                "redirect_uri", googleRedirectUri,
                 "grant_type", "authorization_code"
         );
 
