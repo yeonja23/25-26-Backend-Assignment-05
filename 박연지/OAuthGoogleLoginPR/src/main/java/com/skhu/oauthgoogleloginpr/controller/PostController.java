@@ -2,9 +2,10 @@ package com.skhu.oauthgoogleloginpr.controller;
 
 import com.skhu.oauthgoogleloginpr.dto.post.PostInfoResponseDto;
 import com.skhu.oauthgoogleloginpr.dto.post.PostSaveRequestDto;
+import com.skhu.oauthgoogleloginpr.global.code.SuccessStatus;
+import com.skhu.oauthgoogleloginpr.global.response.BaseResponse;
 import com.skhu.oauthgoogleloginpr.service.PostService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -25,42 +26,41 @@ public class PostController {
     private final PostService postService;
 
     @PostMapping
-    public ResponseEntity<PostInfoResponseDto> createPost(
+    public BaseResponse<PostInfoResponseDto> createPost(
             @RequestBody PostSaveRequestDto requestDto,
             Principal principal
     ) {
         Long userId = Long.parseLong(principal.getName());
-        return ResponseEntity.ok(postService.createPost(requestDto, userId));
+        return BaseResponse.onSuccess(SuccessStatus.CREATED, postService.createPost(requestDto, userId));
     }
 
     @GetMapping
-    public ResponseEntity<List<PostInfoResponseDto>> getAllPosts() {
-        return ResponseEntity.ok(postService.findAllPosts());
+    public BaseResponse<List<PostInfoResponseDto>> getAllPosts() {
+        return BaseResponse.onSuccess(SuccessStatus.OK, postService.findAllPosts());
     }
 
     @GetMapping("/{postId}")
-    public ResponseEntity<PostInfoResponseDto> getPostById(@PathVariable Long postId) {
-        return ResponseEntity.ok(postService.findPostById(postId));
+    public BaseResponse<PostInfoResponseDto> getPostById(@PathVariable Long postId) {
+        return BaseResponse.onSuccess(SuccessStatus.OK, postService.findPostById(postId));
     }
 
     @PatchMapping("/{postId}")
-    public ResponseEntity<PostInfoResponseDto> updatePost(
+    public BaseResponse<PostInfoResponseDto> updatePost(
             @PathVariable Long postId,
             @RequestBody PostSaveRequestDto requestDto,
             Principal principal
     ) {
         Long userId = Long.parseLong(principal.getName());
-        return ResponseEntity.ok(postService.updatePost(postId, requestDto, userId));
+        return BaseResponse.onSuccess(SuccessStatus.OK, postService.updatePost(postId, requestDto, userId));
     }
 
     @DeleteMapping("/{postId}")
-    public ResponseEntity<Void> deletePost(
+    public BaseResponse<Void> deletePost(
             @PathVariable Long postId,
             Principal principal
     ) {
         Long userId = Long.parseLong(principal.getName());
         postService.deletePost(postId, userId);
-        return ResponseEntity.noContent().build();
+        return BaseResponse.onSuccess(SuccessStatus.OK, null);
     }
 }
-
