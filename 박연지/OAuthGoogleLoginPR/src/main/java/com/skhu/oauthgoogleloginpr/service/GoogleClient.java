@@ -16,8 +16,8 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class GoogleClient {
 
-    private final RestTemplate restTemplate = new RestTemplate();
-    private final ObjectMapper objectMapper = new ObjectMapper();
+    private final RestTemplate restTemplate;
+    private final ObjectMapper objectMapper;
 
     @Value("${spring.oauth.google.client-id}")
     private String googleClientId;
