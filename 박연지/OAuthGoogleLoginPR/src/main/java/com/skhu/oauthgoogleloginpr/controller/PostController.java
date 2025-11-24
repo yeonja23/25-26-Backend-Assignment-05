@@ -6,6 +6,8 @@ import com.skhu.oauthgoogleloginpr.global.code.SuccessStatus;
 import com.skhu.oauthgoogleloginpr.global.response.BaseResponse;
 import com.skhu.oauthgoogleloginpr.service.PostService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -35,8 +37,8 @@ public class PostController {
     }
 
     @GetMapping
-    public BaseResponse<List<PostInfoResponseDto>> getAllPosts() {
-        return BaseResponse.onSuccess(SuccessStatus.OK, postService.findAllPosts());
+    public BaseResponse<Page<PostInfoResponseDto>> getAllPosts(Pageable pageable) {
+        return BaseResponse.onSuccess(SuccessStatus.OK, postService.findAllPosts(pageable));
     }
 
     @GetMapping("/{postId}")

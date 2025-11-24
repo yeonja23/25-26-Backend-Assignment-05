@@ -10,6 +10,8 @@ import com.skhu.oauthgoogleloginpr.global.exception.GeneralException;
 import com.skhu.oauthgoogleloginpr.repository.PostRepository;
 import com.skhu.oauthgoogleloginpr.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -37,11 +39,9 @@ public class PostService {
     }
 
     @Transactional(readOnly = true)
-    public List<PostInfoResponseDto> findAllPosts() {
-        return postRepository.findAll()
-                .stream()
-                .map(PostInfoResponseDto::from)
-                .toList();
+    public Page<PostInfoResponseDto> findAllPosts(Pageable pageable) {
+        return postRepository.findAll(pageable)
+                .map(PostInfoResponseDto::from);
     }
 
     @Transactional(readOnly = true)
