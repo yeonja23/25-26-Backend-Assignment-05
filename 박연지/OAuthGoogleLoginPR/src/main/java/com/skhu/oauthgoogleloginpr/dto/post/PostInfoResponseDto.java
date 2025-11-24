@@ -10,7 +10,7 @@ public record PostInfoResponseDto(
         Long id,
         String title,
         String content,
-        String username,
+        String name,
         LocalDateTime createdAt,
         LocalDateTime updatedAt
 ) {
@@ -19,7 +19,7 @@ public record PostInfoResponseDto(
                 .id(post.getId())
                 .title(post.getTitle())
                 .content(post.getContent())
-                .username(post.getUser().getUsername())
+                .name(post.getUser().getName())
                 .createdAt(post.getCreatedAt())
                 .updatedAt(post.getUpdatedAt())
                 .build();

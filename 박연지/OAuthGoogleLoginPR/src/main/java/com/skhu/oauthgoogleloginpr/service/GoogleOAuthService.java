@@ -34,7 +34,7 @@ public class GoogleOAuthService {
 
     private User registerGoogleUser(GoogleUserInfo googleUser) {
         User newUser = User.builder()
-                .username(googleUser.getName())
+                .name(googleUser.getName())
                 .email(googleUser.getEmail())
                 .password(null)
                 .role(Role.USER)

@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 @Builder
 public record UserInfoResponseDto(
         Long id,
-        String username,
+        String name,
         String email,
         String role,
         LocalDateTime createdAt,
@@ -17,7 +17,7 @@ public record UserInfoResponseDto(
     public static UserInfoResponseDto from(User user) {
         return UserInfoResponseDto.builder()
                 .id(user.getId())
-                .username(user.getUsername())
+                .name(user.getName())
                 .email(user.getEmail())
                 .role(user.getRole().name())
                 .createdAt(user.getCreatedAt())

@@ -20,7 +20,7 @@ public class User extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String username;
+    private String name;
     private String password;
     private String email;
 
@@ -28,8 +28,8 @@ public class User extends BaseEntity {
     private Role role;
 
     @Builder
-    public User(String username, String password, String email, Role role) {
-        this.username = username;
+    public User(String name, String password, String email, Role role) {
+        this.name = name;
         this.password = password;
         this.email = email;
         this.role = role;

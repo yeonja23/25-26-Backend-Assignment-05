@@ -22,7 +22,7 @@ public class AdminInitializer {
     public CommandLineRunner initAdminUser() {
         return args -> {
             User admin = User.builder()
-                    .username("admin")
+                    .name("admin")
                     .email("admin@test.com")
                     .password(passwordEncoder.encode("admin1234"))
                     .role(Role.ADMIN)

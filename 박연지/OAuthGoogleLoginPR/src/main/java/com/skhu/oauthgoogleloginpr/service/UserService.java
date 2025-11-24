@@ -25,7 +25,7 @@ public class UserService {
         validateDuplicateEmail(requestDto.email());
 
         User user = User.builder()
-                .username(requestDto.username())
+                .name(requestDto.name())
                 .email(requestDto.email())
                 .password(passwordEncoder.encode(requestDto.password()))
                 .role(Role.USER)
