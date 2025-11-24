@@ -24,8 +24,7 @@ public class PostService {
 
     @Transactional
     public PostInfoResponseDto createPost(PostSaveRequestDto requestDto, Long userId) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new GeneralException(ErrorStatus.USER_NOT_FOUND));
+        User user = getUser(userId);
 
         Post post = Post.builder()
                 .title(requestDto.title())
@@ -47,22 +46,16 @@ public class PostService {
 
     @Transactional(readOnly = true)
     public PostInfoResponseDto findPostById(Long postId) {
-        Post post = postRepository.findById(postId)
-                .orElseThrow(() -> new GeneralException(ErrorStatus.POST_NOT_FOUND));
+        Post post = getPost(postId);
         return PostInfoResponseDto.from(post);
     }
 
     @Transactional
     public PostInfoResponseDto updatePost(Long postId, PostSaveRequestDto requestDto, Long userId) {
-        Post post = postRepository.findById(postId)
-                .orElseThrow(() -> new GeneralException(ErrorStatus.POST_NOT_FOUND));
+        Post post = getPost(postId);
+        User user = getUser(userId);
 
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new GeneralException(ErrorStatus.USER_NOT_FOUND));
-
-        if (!post.getUser().getId().equals(userId) && user.getRole() != Role.ADMIN) {
-            throw new GeneralException(ErrorStatus.POST_ACCESS_DENIED);
-        }
+        checkPostAccess(post, user);
 
         post.update(requestDto.title(), requestDto.content());
         return PostInfoResponseDto.from(post);
@@ -70,16 +63,32 @@ public class PostService {
 
     @Transactional
     public void deletePost(Long postId, Long userId) {
-        Post post = postRepository.findById(postId)
-                .orElseThrow(() -> new GeneralException(ErrorStatus.POST_NOT_FOUND));
+        Post post = getPost(postId);
 
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new GeneralException(ErrorStatus.USER_NOT_FOUND));
+        User user = getUser(userId);
 
-        if (!post.getUser().getId().equals(userId) && user.getRole() != Role.ADMIN) {
-            throw new GeneralException(ErrorStatus.POST_ACCESS_DENIED);
-        }
+        checkPostAccess(post, user);
 
         postRepository.delete(post);
+    }
+
+    // 헬퍼 메소드들
+    private User getUser(Long userId) {
+        return userRepository.findById(userId)
+                .orElseThrow(() -> new GeneralException(ErrorStatus.USER_NOT_FOUND));
+    }
+
+    private Post getPost(Long postId) {
+        return postRepository.findById(postId)
+                .orElseThrow(() -> new GeneralException(ErrorStatus.POST_NOT_FOUND));
+    }
+
+    private void checkPostAccess(Post post, User user) {
+        boolean isOwner = post.getUser().getId().equals(user.getId());
+        boolean isAdmin = user.getRole() == Role.ADMIN;
+
+        if (!isOwner && !isAdmin) {
+            throw new GeneralException(ErrorStatus.POST_ACCESS_DENIED);
+        }
     }
 }
