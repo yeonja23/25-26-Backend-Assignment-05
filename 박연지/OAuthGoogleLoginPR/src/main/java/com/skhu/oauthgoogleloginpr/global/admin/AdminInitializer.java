@@ -21,15 +21,22 @@ public class AdminInitializer {
     @Bean
     public CommandLineRunner initAdminUser() {
         return args -> {
+
+            String adminEmail = "admin@test.com";
+
+            if (userRepository.existsByEmail(adminEmail)) {
+                return;
+            }
+
             User admin = User.builder()
                     .name("admin")
-                    .email("admin@test.com")
+                    .email(adminEmail)
                     .password(passwordEncoder.encode("admin1234"))
                     .role(Role.ADMIN)
                     .build();
 
             userRepository.save(admin);
-            log.info("관리자 계정 생성됨: {} / {}", "admin@test.com", "admin1234");
+            log.info("관리자 계정 생성됨: {} / {}", adminEmail, "admin1234");
         };
     }
 }
