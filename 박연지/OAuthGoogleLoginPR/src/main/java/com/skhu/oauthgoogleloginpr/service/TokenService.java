@@ -24,13 +24,11 @@ public class TokenService {
     public TokenDto generateTokens(User user) {
         String accessToken = tokenProvider.createAccessToken(
                 user.getId(),
-                user.getEmail(),
                 user.getRole().name()
         );
 
         String refreshToken = tokenProvider.createRefreshToken(
-                user.getId(),
-                user.getEmail()
+                user.getId()
         );
 
         return new TokenDto(accessToken, refreshToken);
@@ -94,7 +92,6 @@ public class TokenService {
         // 7) 새로운 AccessToken 발급
         String newAccessToken = tokenProvider.createAccessToken(
                 user.getId(),
-                user.getEmail(),
                 user.getRole().name()
         );
 

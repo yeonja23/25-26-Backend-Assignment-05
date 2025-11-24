@@ -43,12 +43,11 @@ public class TokenProvider {
     }
 
     // AccessToken 생성
-    public String createAccessToken(Long userId, String email, String role) {
+    public String createAccessToken(Long userId, String role) {
         Date now = new Date();
         Date accessTokenExpiredTime = new Date(now.getTime() + accessTokenValidityTime);
         return Jwts.builder()
                 .subject(userId.toString())
-                .claim("email", email)
                 .claim(ROLE_CLAIM, role)
                 .claim("token_type", "access_token")
                 .issuedAt(now)
@@ -58,13 +57,12 @@ public class TokenProvider {
     }
 
     // RefreshToken 생성
-    public String createRefreshToken(Long userId, String email) {
+    public String createRefreshToken(Long userId) {
         Date now = new Date();
         Date refreshTokenExpiredTime = new Date(now.getTime() + refreshTokenValidityTime);
 
         return Jwts.builder()
                 .subject(userId.toString())
-                .claim("email", email)
                 .claim("token_type", "refresh_token")
                 .issuedAt(now)
                 .expiration(refreshTokenExpiredTime)
